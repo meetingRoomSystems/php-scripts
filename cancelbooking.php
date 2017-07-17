@@ -14,11 +14,14 @@ if (isset($_GET['username']) && isset($_GET['room']) && isset($_GET['booking_dat
     if (mysqli_connect_errno($con)) {
       echo "Failed to connect to MySQL: " . mysqli_connect_error();
     }
+    // get full name and capacity for the booking we have to delete
     $getData = mysqli_query($con,"SELECT capacity,fullname FROM booking WHERE username = '$username' AND room = '$room' AND booking_date = '$date' AND booking_time = '$time'");
     $row = mysqli_fetch_array($getData,MYSQLI_ASSOC);
     $fullname = $row["fullname"];
     $capacity = $row["capacity"];
+    // detele the booking
     $result = mysqli_query($con,"DELETE FROM booking WHERE username = '$username' AND room = '$room' AND booking_date = '$date' AND booking_time = '$time'");
+    // add a row in reminder. This will be read by the android application letting it know to remove alert for that booking
     $result2 = mysqli_query($con,"INSERT INTO reminders (fullname, username, capacity, room, booking_date, booking_time,reminder) VALUES('$fullname', '$username', '$capacity','$room','$date','$time','1')");
     if ($result) {
       $response["success"] = 1;

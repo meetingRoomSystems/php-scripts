@@ -14,7 +14,7 @@ if (isset($_GET['username']) && isset($_GET['capacity']) && isset($_GET['room'])
     $time= $_GET['booking_time'];
     $length = $_GET['length'];
     $minDate = date("Y-m-d");
-
+    // calculate end time using start time and duration
     $time2 = new DateTime($time);
     if($length == 30){
       $time2 ->add(new DateInterval('PT30M'));
@@ -33,6 +33,8 @@ if (isset($_GET['username']) && isset($_GET['capacity']) && isset($_GET['room'])
     if (mysqli_connect_errno($con)) {
       echo "Failed to connect to MySQL: " . mysqli_connect_error();
     }
+
+    // check if a room is available for the whole duration of a meeting
     if($length == 30){
       $check = mysqli_query($con,"SELECT room FROM booking WHERE booking_date='$date' AND (booking_time='$time' OR booking_time_end='$endTime') AND room='$room' LIMIT 1");
     }
@@ -50,6 +52,8 @@ if (isset($_GET['username']) && isset($_GET['capacity']) && isset($_GET['room'])
       $queryTime2 = $time3->format('H:i:s');
       $check = mysqli_query($con,"SELECT room FROM booking WHERE booking_date='$date' AND (booking_time='$time' OR booking_time='$queryTime' OR booking_time='$queryTime2' OR booking_time_end='$queryTime' OR booking_time_end='$queryTime2' OR booking_time_end='$endTime') AND room='$room' LIMIT 1");
     }
+
+    // if a room is available book the room
     if(mysqli_num_rows($check) == 0){
       $getName = mysqli_query($con,"SELECT fullname FROM login WHERE username='$username'");
       if($getName){
@@ -75,7 +79,7 @@ if (isset($_GET['username']) && isset($_GET['capacity']) && isset($_GET['room'])
     $response["success"] = 0;
     $response["message"] = "Required field(s) is missing";
 
-  
+
     echo json_encode($response);
 }
 ?>
