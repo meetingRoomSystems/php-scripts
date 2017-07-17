@@ -16,7 +16,8 @@ if (isset($_GET['username'])){
   $row = mysqli_fetch_array($check,MYSQLI_ASSOC);
   if($row["role"] == "admin"){
     $result = mysqli_query($con,"DELETE FROM booking WHERE booking_date < '$minDate'");
-    if($result){
+    $result2 = mysqli_query($con,"DELETE FROM reminders WHERE booking_date < '$minDate'");
+    if($result && $result2){
       $response["success"] = 1;
       $response["message"] = "Done";
       echo json_encode($response);
