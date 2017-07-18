@@ -19,7 +19,7 @@ if (isset($_GET["username"])){
     $booking["capacity"] = $row["capacity"];
     $booking["room"] = $row["room"];
     $booking["booking_date"] = $row["booking_date"];
-    $booking["booking_time"] = $row["booking_time"];
+    $booking["booking_start"] = $row["booking_time"];
     $booking["reminder"] = $row["reminder"];
     array_push($response["bookings"], $booking);
   }
