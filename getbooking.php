@@ -1,6 +1,8 @@
 <?php
+// array for JSON response
 $response = array();
 
+// check for required fields
 if (isset($_GET["username"]) || isset($_GET["booking_date"]) || isset($_GET["booking_time"]) || isset($_GET["room"]) || isset($_GET["all"])){
     $con = mysqli_connect("localhost", "id2172274_compulynxmeetingroom", "Compulynx123","id2172274_booking_system");
 
@@ -11,13 +13,11 @@ if (isset($_GET["username"]) || isset($_GET["booking_date"]) || isset($_GET["boo
     $minDate = date("Y-m-d");
 
     if (isset($_GET["booking_date"]) && isset($_GET["username"])){
-      // get all bookings of a user on a certain date
       $username = $_GET["username"];
       $date = $_GET["booking_date"]; // date in the format "YYYY-MM-DD"
       $result = mysqli_query($con,"SELECT * FROM booking WHERE username='$username' AND booking_date='$date' ORDER BY booking_date ASC, booking_time ASC");
     }
     else if(isset($_GET["room"]) && isset($_GET["booking_date"]) && isset($_GET["booking_time"])){
-      // get all bookings of a room on a certain date and time
       $room = $_GET["room"];
       $date = $_GET["booking_date"];
       $time = $_GET["booking_time"];
@@ -43,9 +43,7 @@ if (isset($_GET["username"]) || isset($_GET["booking_date"]) || isset($_GET["boo
       }
       else{
           $rm =  array('1','2','3','4');
-          // get all bookings between the time start and end time
           if($duration == 30){
-            // get all rooms that either start a booking at the same time or end a booking at the same time
             $res = mysqli_query($con,"SELECT room FROM booking WHERE booking_date='$date' AND (booking_time='$time' OR booking_time_end='$endTime')");
           }
           else if($duration == 60){
@@ -68,7 +66,6 @@ if (isset($_GET["username"]) || isset($_GET["booking_date"]) || isset($_GET["boo
             echo json_encode($response);
             return;
           }
-          // if a booking exists for a certain room, remove the room from the array rm
           $response["rooms"] = array();
           if ((mysqli_num_rows($res) != 0)) {
             while($row = mysqli_fetch_array($res,MYSQLI_ASSOC)){
@@ -201,6 +198,7 @@ if (isset($_GET["username"]) || isset($_GET["booking_date"]) || isset($_GET["boo
         $booking["booking_start"] = $row["booking_time"];
         $booking["booking_end"] = $row["booking_time_end"];
         $booking["duration"] = $row["duration"];
+        $booking["others"] = $row["others"];
 
         $datetime1 = new DateTime($row['booking_time']);
         $booking["all_bookings"] = array();
@@ -226,9 +224,11 @@ if (isset($_GET["username"]) || isset($_GET["booking_date"]) || isset($_GET["boo
         echo json_encode($response);
     }
 } else {
+    // required field is missing
     $response["success"] = 0;
     $response["message"] = "Required field(s) are missing";
 
+    // echoing JSON response
     echo json_encode($response);
 }
 ?>
