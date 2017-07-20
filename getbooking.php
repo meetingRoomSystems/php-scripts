@@ -178,7 +178,12 @@ if (isset($_GET["username"]) || isset($_GET["booking_date"]) || isset($_GET["boo
       $result = mysqli_query($con,"SELECT * FROM booking WHERE username='$username' AND (booking_date > '$minDate' OR (booking_date = '$minDate' AND booking_time >= '$minTime')) ORDER BY booking_date ASC, booking_time ASC");
     }
     else if(isset($_GET["all"])){
-      $result = mysqli_query($con,"SELECT * FROM booking WHERE booking_date >= '$minDate' ORDER BY booking_date ASC, booking_time ASC");
+      if($all == 1){
+          $result = mysqli_query($con,"SELECT * FROM booking WHERE booking_date >= '$minDate' ORDER BY booking_date ASC, booking_time ASC");
+      }
+      else{
+        $result = mysqli_query($con,"SELECT * FROM booking ORDER BY booking_date ASC, booking_time ASC");
+      }
     }
     else if(isset($_GET["booking_date"])){
       $date = $_GET["booking_date"]; // date in the format "YYYY-MM-DD"
