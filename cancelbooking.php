@@ -16,7 +16,7 @@ if (isset($_GET['username']) && isset($_GET['room']) && isset($_GET['booking_dat
     $time= $_GET['booking_time'];
 
     // connecting to db
-    $con = mysqli_connect("localhost", "id2172274_compulynxmeetingroom", "Compulynx123","id2172274_booking_system");
+  $con = mysqli_connect("localhost", "id2172274_compulynxmeetingroom", "Compulynx123","id2172274_booking_system");
 
     if (mysqli_connect_errno($con)) {
       echo "Failed to connect to MySQL: " . mysqli_connect_error();
@@ -25,6 +25,7 @@ if (isset($_GET['username']) && isset($_GET['room']) && isset($_GET['booking_dat
     $row = mysqli_fetch_array($getData,MYSQLI_ASSOC);
     $fullname = $row["fullname"];
     $capacity = $row["capacity"];
+    $newCapacity = $capacity - 1;
     $others = $row["others"];
     $result = mysqli_query($con,"DELETE FROM booking WHERE username = '$username' AND room = '$room' AND booking_date = '$date' AND booking_time = '$time'");
     $result2 = mysqli_query($con,"INSERT INTO reminders (fullname, username, capacity, room, booking_date, booking_time,reminder) VALUES('$fullname', '$username', '$capacity','$room','$date','$time','1')");
@@ -39,7 +40,7 @@ if (isset($_GET['username']) && isset($_GET['room']) && isset($_GET['booking_dat
           }
         }
         $newOthers = rtrim($newOthers,",");
-        $updateRes = mysqli_query($con,"UPDATE booking SET others = '$newOthers' WHERE fullname = '$uname' AND room = '$room' AND booking_date = '$date' AND booking_time = '$time'");
+        $updateRes = mysqli_query($con,"UPDATE booking SET others = '$newOthers', capacity = '$newCapacity' WHERE fullname = '$uname' AND room = '$room' AND booking_date = '$date' AND booking_time = '$time'");
       }
     }
 
